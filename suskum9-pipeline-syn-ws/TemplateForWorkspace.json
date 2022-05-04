@@ -1,0 +1,719 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "suskum9-pipeline-syn-ws"
+		},
+		"AOI Batch Storage_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AOI Batch Storage'"
+		},
+		"AOI Data Storage Account v2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AOI Data Storage Account v2'"
+		},
+		"AOI Geospatial v2 FS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AOI Geospatial v2 FS'"
+		},
+		"suskum9-pipeline-syn-ws-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'suskum9-pipeline-syn-ws-WorkspaceDefaultSqlServer'"
+		},
+		"AOI Batch_properties_typeProperties_batchUri": {
+			"type": "string",
+			"defaultValue": "https://stellarbatchdev.eastus.batch.azure.com"
+		},
+		"AOI Batch_properties_typeProperties_poolName": {
+			"type": "string",
+			"defaultValue": "data-cpu-pool"
+		},
+		"AOI Batch_properties_typeProperties_accountName": {
+			"type": "string",
+			"defaultValue": "stellarbatchdev"
+		},
+		"AOI Geospatial v2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://rawdatadaztik.dfs.core.windows.net"
+		},
+		"AOI Pipeline Key Vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://suskum9-pipeline-kv.vault.azure.net/"
+		},
+		"suskum9-pipeline-syn-ws-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://synhnsmqercd.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/gld')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AOI Geospatial v2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"DestinationFolderPath": {
+						"type": "string"
+					},
+					"DestinationContainerName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "@dataset().DestinationFolderPath",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().DestinationContainerName",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Geospatial v2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/gls')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AOI Geospatial v2 FS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureFileStorageLocation"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Geospatial v2 FS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/rawtifs')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AOI Data Storage Account v2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"containername": {
+						"type": "string"
+					},
+					"folderpath": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Binary",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@dataset().folderpath",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().containername",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Data Storage Account v2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/spec_doc_specification')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AOI Data Storage Account v2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"filename": {
+						"type": "string"
+					},
+					"folderpath": {
+						"type": "string"
+					},
+					"containername": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": {
+							"value": "@dataset().filename",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().folderpath",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@dataset().containername",
+							"type": "Expression"
+						}
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Data Storage Account v2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Batch Storage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AOI Batch Storage_connectionString')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AOI Pipeline Key Vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "PackageStorageAccountKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Pipeline Key Vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Batch')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBatch",
+				"typeProperties": {
+					"batchUri": "[parameters('AOI Batch_properties_typeProperties_batchUri')]",
+					"poolName": "[parameters('AOI Batch_properties_typeProperties_poolName')]",
+					"accountName": "[parameters('AOI Batch_properties_typeProperties_accountName')]",
+					"linkedServiceName": {
+						"referenceName": "AOI Batch Storage",
+						"type": "LinkedServiceReference"
+					},
+					"accessKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AOI Pipeline Key Vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "GeospatialBatchAccountKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Batch Storage')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Pipeline Key Vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Data Storage Account v2')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AOI Data Storage Account v2_connectionString')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AOI Pipeline Key Vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "GeospatialStorageAccountKey"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Pipeline Key Vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Geospatial v2 FS')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AOI Geospatial v2 FS_connectionString')]",
+					"accountKey": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AOI Pipeline Key Vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "GeospatialStorageAccountKey"
+					},
+					"fileShare": "volume-a"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/AOI Pipeline Key Vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Geospatial v2')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AOI Geospatial v2_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AOI Pipeline Key Vault')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AOI Pipeline Key Vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/suskum9-pipeline-syn-ws-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('suskum9-pipeline-syn-ws-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/suskum9-pipeline-syn-ws-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('suskum9-pipeline-syn-ws-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/ReadSpecDocumentFlow')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "spec_doc_specification",
+								"type": "DatasetReference"
+							},
+							"name": "source"
+						}
+					],
+					"sinks": [
+						{
+							"name": "sink"
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> source",
+						"source sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     store: 'cache',",
+						"     format: 'inline',",
+						"     output: true,",
+						"     saveOrder: 1) ~> sink"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/spec_doc_specification')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Convert')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Convert",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_convert/src/convert.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "72aef2fd-aaae-40ed-8a09-7b2e87353ace"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Copy noop')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Copy noop",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/copy_noop/src/main.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "01767b3a-cede-4abf-8b79-52cb6d0ff80d"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Crop')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Crop",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_crop/src/crop.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "f4cbbafe-9d98-476f-9bd4-e5bfc7bad06c"
+					},
+					"args": [],
+					"jars": [],
+					"files": [
+						"abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_crop/src/utils.py"
+					],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Mosaic')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Mosaic",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_mosaic/src/mosaic.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "3",
+						"spark.autotune.trackingId": "811de002-982f-4b4b-9732-147d3565c502"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 3
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Pool Geolocation')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Pool Geolocation",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/pool_geolocation/src/main.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "0d715b42-8d99-4e74-8a24-860c7275f387"
+					},
+					"args": [],
+					"jars": [],
+					"files": [
+						"abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/pool_geolocation/src/utils.py"
+					],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Tiling')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Tiling",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_tiling/src/tiling.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "1",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "65be76e5-ef21-47ec-be7a-38039b2abfd4"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 2
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Warp')]",
+			"type": "Microsoft.Synapse/workspaces/sparkJobDefinitions",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"targetBigDataPool": {
+					"referenceName": "poolmqercd",
+					"type": "BigDataPoolReference"
+				},
+				"requiredSparkVersion": "3.1",
+				"language": "python",
+				"jobProperties": {
+					"name": "Warp",
+					"file": "abfss://spark-jobs@synhnsmqercd.dfs.core.windows.net/raster_warp/src/warp.py",
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "3",
+						"spark.dynamicAllocation.maxExecutors": "3",
+						"spark.autotune.trackingId": "335dd1ad-fc75-4734-ad92-03a79e9ad399"
+					},
+					"args": [],
+					"jars": [],
+					"files": [],
+					"driverMemory": "56g",
+					"driverCores": 8,
+					"executorMemory": "56g",
+					"executorCores": 8,
+					"numExecutors": 3
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/poolmqercd')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 15
+				},
+				"autoScale": {
+					"enabled": true,
+					"maxNodeCount": 5,
+					"minNodeCount": 3
+				},
+				"nodeCount": 3,
+				"nodeSize": "Medium",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.1",
+				"libraryRequirements": {
+					"content": "name: aoi-env\nchannels:\n  - conda-forge\n  - defaults\ndependencies:\n  - gdal=3.3.0\n  - pip>=20.1.1\n  - azure-storage-file-datalake\n  - libgdal\n  - shapely\n  - pyproj\n  - pip:\n    - rasterio\n    - geopandas\n",
+					"filename": "/Users/suskuma/synapse-airbus/repos/Azure-Orbital-Analytics-Samples/deploy/environment.yml",
+					"time": "2022-05-03T23:43:30.1847685Z"
+				},
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"customLibraries": [
+					{
+						"name": "notebook-utils-1.0.16-SNAPSHOT (1).jar",
+						"path": "suskum9-pipeline-syn-ws/libraries/notebook-utils-1.0.16-SNAPSHOT (1).jar",
+						"containerName": "prep",
+						"uploadedTimestamp": "0001-01-01T00:00:00+00:00",
+						"type": "jar"
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus"
+		}
+	]
+}
