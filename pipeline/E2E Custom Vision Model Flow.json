@@ -1,114 +1,114 @@
 {
-    "name": "E2E Custom Vision Model Flow",
-    "properties": {
-        "activities": [
-            {
-                "name": "Transforms",
-                "type": "ExecutePipeline",
-                "dependsOn": [],
-                "userProperties": [],
-                "typeProperties": {
-                    "pipeline": {
-                        "referenceName": "Custom Vision Model Transforms v2",
-                        "type": "PipelineReference"
-                    },
-                    "waitOnCompletion": true,
-                    "parameters": {
-                        "Prefix": {
-                            "value": "@pipeline().parameters.Prefix",
-                            "type": "Expression"
-                        },
-                        "StorageAccountName": {
-                            "value": "@pipeline().parameters.StorageAccountName",
-                            "type": "Expression"
-                        },
-                        "StorageAccountKey": {
-                            "value": "@pipeline().parameters.StorageAccountKey",
-                            "type": "Expression"
-                        }
-                    }
-                }
-            },
-            {
-                "name": "Custom Vision Object Detection",
-                "type": "ExecutePipeline",
-                "dependsOn": [
-                    {
-                        "activity": "Transforms",
-                        "dependencyConditions": [
-                            "Succeeded"
-                        ]
-                    }
-                ],
-                "userProperties": [],
-                "typeProperties": {
-                    "pipeline": {
-                        "referenceName": "Custom Vision Object Detection v2",
-                        "type": "PipelineReference"
-                    },
-                    "waitOnCompletion": true,
-                    "parameters": {
-                        "Prefix": {
-                            "value": "@pipeline().parameters.Prefix",
-                            "type": "Expression"
-                        },
-                        "BatchName": {
-                            "value": "@pipeline().parameters.BatchAccountName",
-                            "type": "Expression"
-                        },
-                        "JobName": {
-                            "value": "@pipeline().parameters.BatchJobName",
-                            "type": "Expression"
-                        },
-                        "BatchLocation": {
-                            "value": "@pipeline().parameters.BatchLocation",
-                            "type": "Expression"
-                        },
-                        "StorageAccountName": {
-                            "value": "@pipeline().parameters.StorageAccountName",
-                            "type": "Expression"
-                        },
-                        "StorageAccountKey": {
-                            "value": "@pipeline().parameters.StorageAccountKey",
-                            "type": "Expression"
-                        }
-                    }
-                }
-            }
-        ],
-        "parameters": {
-            "Prefix": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "StorageAccountName": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "StorageAccountKey": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "BatchAccountName": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "BatchJobName": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "BatchLocation": {
-                "type": "string",
-                "defaultValue": ""
-            }
-        },
-        "variables": {
-            "Storage_Account_Conn_String": {
-                "type": "String"
-            }
-        },
-        "annotations": [],
-        "lastPublishTime": "2022-03-06T05:42:39Z"
-    },
-    "type": "Microsoft.Synapse/workspaces/pipelines"
+	"name": "E2E Custom Vision Model Flow",
+	"properties": {
+		"activities": [
+			{
+				"name": "Transforms",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Custom Vision Model Transforms v2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Prefix": {
+							"value": "@pipeline().parameters.Prefix",
+							"type": "Expression"
+						},
+						"StorageAccountName": {
+							"value": "@pipeline().parameters.StorageAccountName",
+							"type": "Expression"
+						},
+						"StorageAccountKey": {
+							"value": "@pipeline().parameters.StorageAccountKey",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Custom Vision Object Detection",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Transforms",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Custom Vision Object Detection v2",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Prefix": {
+							"value": "@pipeline().parameters.Prefix",
+							"type": "Expression"
+						},
+						"BatchName": {
+							"value": "@pipeline().parameters.BatchAccountName",
+							"type": "Expression"
+						},
+						"JobName": {
+							"value": "@pipeline().parameters.BatchJobName",
+							"type": "Expression"
+						},
+						"BatchLocation": {
+							"value": "@pipeline().parameters.BatchLocation",
+							"type": "Expression"
+						},
+						"StorageAccountName": {
+							"value": "@pipeline().parameters.StorageAccountName",
+							"type": "Expression"
+						},
+						"StorageAccountKey": {
+							"value": "@pipeline().parameters.StorageAccountKey",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Prefix": {
+				"type": "string",
+				"defaultValue": "newone"
+			},
+			"StorageAccountName": {
+				"type": "string",
+				"defaultValue": "rawdatakikqvh"
+			},
+			"StorageAccountKey": {
+				"type": "string",
+				"defaultValue": "NolU6yI0hjpHwon7sEiXSfBVll/t078R4gSQDWkeFUM8INnLeICl5lqX1JYN3hJfu9ubhUE6x8hY+ASt4sNPHA=="
+			},
+			"BatchAccountName": {
+				"type": "string",
+				"defaultValue": "stellarbatchdev"
+			},
+			"BatchJobName": {
+				"type": "string",
+				"defaultValue": "suskum11-data-cpu-pool"
+			},
+			"BatchLocation": {
+				"type": "string",
+				"defaultValue": "eastus"
+			}
+		},
+		"variables": {
+			"Storage_Account_Conn_String": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-03-06T05:42:39Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
 }
