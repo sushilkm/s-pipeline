@@ -1,0 +1,33 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"value": "pr76a338b-pipeline-syn-ws"
+		},
+		"AOI Batch Storage_connectionString": {
+			"value": ""
+		},
+		"AOI Data Storage Account v2_connectionString": {
+			"value": ""
+		},
+		"AOI Geospatial v2 FS_connectionString": {
+			"value": ""
+		},
+		"AOI Batch_properties_typeProperties_batchUri": {
+			"value": "https://stellarbatchdev.eastus.batch.azure.com"
+		},
+		"AOI Batch_properties_typeProperties_poolName": {
+			"value": "data-cpu-pool"
+		},
+		"AOI Batch_properties_typeProperties_accountName": {
+			"value": "stellarbatchdev"
+		},
+		"AOI Geospatial v2_properties_typeProperties_url": {
+			"value": "https://rawdataf2iypo.dfs.core.windows.net"
+		},
+		"AOI Pipeline Key Vault_properties_typeProperties_baseUrl": {
+			"value": "https://pr76a338b-pipeline-kv.vault.azure.net/"
+		}
+	}
+}
