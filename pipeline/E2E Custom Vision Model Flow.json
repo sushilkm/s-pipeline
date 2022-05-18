@@ -99,7 +99,7 @@
 			},
 			"BatchLocation": {
 				"type": "string",
-				"defaultValue": "eatus"
+				"defaultValue": "eastus"
 			}
 		},
 		"variables": {
