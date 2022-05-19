@@ -1,26 +1,24 @@
 {
-    "name": "Crop",
+    "name": "Transforms",
     "properties": {
         "targetBigDataPool": {
-            "referenceName": "poolcr2zsf",
+            "referenceName": "poolu43qtu",
             "type": "BigDataPoolReference"
         },
         "requiredSparkVersion": "3.1",
         "language": "python",
         "jobProperties": {
-            "name": "Crop",
-            "file": "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/raster_crop/src/crop.py",
+            "name": "Transforms",
+            "file": "abfss://spark-jobs@synhnsu43qtu.dfs.core.windows.net/customvision_transform/src/main.py",
             "conf": {
                 "spark.dynamicAllocation.enabled": "false",
                 "spark.dynamicAllocation.minExecutors": "1",
                 "spark.dynamicAllocation.maxExecutors": "2",
-                "spark.autotune.trackingId": "f4cbbafe-9d98-476f-9bd4-e5bfc7bad06c"
+                "spark.autotune.trackingId": "72aef2fd-aaae-40ed-8a09-7b2e87353ace"
             },
             "args": [],
             "jars": [],
-            "files": [
-                "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/raster_crop/src/utils.py"
-            ],
+            "files": [],
             "driverMemory": "56g",
             "driverCores": 8,
             "executorMemory": "56g",

@@ -5,7 +5,7 @@
         "annotations": [],
         "type": "AzureKeyVault",
         "typeProperties": {
-            "baseUrl": "https://pr487faf0-pipeline-kv.vault.azure.net/"
+            "baseUrl": "https://pr297984f-pipeline-kv.vault.azure.net/"
         }
     }
 }

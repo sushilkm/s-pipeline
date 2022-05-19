@@ -186,7 +186,7 @@
                         "referenceName": "Pool Geolocation",
                         "type": "SparkJobDefinitionReference"
                     },
-                    "file": "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/pool_geolocation/src/main.py",
+                    "file": "abfss://spark-jobs@synhnsu43qtu.dfs.core.windows.net/pool_geolocation/src/main.py",
                     "args": [
                         "--storage_account_name",
                         "@pipeline().parameters.StorageAccountName",
@@ -195,16 +195,14 @@
                         "--src_folder_name",
                         "detections",
                         "--key_vault_name",
-                        "pr487faf0-pipeline-kv",
+                        "pr297984f-pipeline-kv",
                         "--storage_account_key_secret_name",
                         "GeospatialStorageAccountKey",
                         "--linked_service_name",
-                        "AOI Pipeline Key Vault",
-                        "--config_file_name",
-                        "config-pool-geolocation.json"
+                        "AOI Pipeline Key Vault"
                     ],
                     "targetBigDataPool": {
-                        "referenceName": "poolcr2zsf",
+                        "referenceName": "poolu43qtu",
                         "type": "BigDataPoolReference"
                     },
                     "executorSize": "Medium",
@@ -240,7 +238,7 @@
                         "referenceName": "Copy noop",
                         "type": "SparkJobDefinitionReference"
                     },
-                    "file": "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/copy_noop/src/main.py",
+                    "file": "abfss://spark-jobs@synhnsu43qtu.dfs.core.windows.net/copy_noop/src/main.py",
                     "args": [
                         "--storage_account_name",
                         "@pipeline().parameters.StorageAccountName",
@@ -249,7 +247,7 @@
                         "--src_folder",
                         "tiles",
                         "--key_vault_name",
-                        "pr487faf0-pipeline-kv",
+                        "pr297984f-pipeline-kv",
                         "--storage_account_key_secret_name",
                         "GeospatialStorageAccountKey",
                         "--linked_service_name",
@@ -266,7 +264,7 @@
                         "@concat(pipeline().parameters.Prefix,'/', activity('Read Spec Document').output['runStatus'].output.sink.value[0]['logsDirectory'])"
                     ],
                     "targetBigDataPool": {
-                        "referenceName": "poolcr2zsf",
+                        "referenceName": "poolu43qtu",
                         "type": "BigDataPoolReference"
                     },
                     "executorSize": "Medium",
@@ -302,7 +300,7 @@
                         "referenceName": "Copy noop",
                         "type": "SparkJobDefinitionReference"
                     },
-                    "file": "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/copy_noop/src/main.py",
+                    "file": "abfss://spark-jobs@synhnsu43qtu.dfs.core.windows.net/copy_noop/src/main.py",
                     "args": [
                         "--storage_account_name",
                         "@pipeline().parameters.StorageAccountName",
@@ -311,7 +309,7 @@
                         "--src_folder",
                         "@concat('config/', activity('Read Spec Document').output['runStatus'].output.sink.value[0]['contextFileName'])",
                         "--key_vault_name",
-                        "pr487faf0-pipeline-kv",
+                        "pr297984f-pipeline-kv",
                         "--storage_account_key_secret_name",
                         "GeospatialStorageAccountKey",
                         "--linked_service_name",
@@ -322,7 +320,7 @@
                         "@concat(pipeline().parameters.Prefix, '/', activity('Read Spec Document').output['runStatus'].output.sink.value[0]['contextFileName'])"
                     ],
                     "targetBigDataPool": {
-                        "referenceName": "poolcr2zsf",
+                        "referenceName": "poolu43qtu",
                         "type": "BigDataPoolReference"
                     },
                     "executorSize": "Medium",
@@ -523,7 +521,7 @@
                         "referenceName": "Copy noop",
                         "type": "SparkJobDefinitionReference"
                     },
-                    "file": "abfss://spark-jobs@synhnscr2zsf.dfs.core.windows.net/copy_noop/src/main.py",
+                    "file": "abfss://spark-jobs@synhnsu43qtu.dfs.core.windows.net/copy_noop/src/main.py",
                     "args": [
                         "--storage_account_name",
                         "@pipeline().parameters.StorageAccountName",
@@ -532,7 +530,7 @@
                         "--src_folder",
                         "convert/output.png.aux.xml",
                         "--key_vault_name",
-                        "pr487faf0-pipeline-kv",
+                        "pr297984f-pipeline-kv",
                         "--storage_account_key_secret_name",
                         "GeospatialStorageAccountKey",
                         "--linked_service_name",
@@ -543,7 +541,7 @@
                         "@concat(pipeline().parameters.Prefix, '/', activity('Read Spec Document').output['runStatus'].output.sink.value[0]['submissionDirectory'], '/output.png.aux.xml')"
                     ],
                     "targetBigDataPool": {
-                        "referenceName": "poolcr2zsf",
+                        "referenceName": "poolu43qtu",
                         "type": "BigDataPoolReference"
                     },
                     "executorSize": "Medium",
@@ -574,10 +572,6 @@
                 "defaultValue": ""
             },
             "StorageAccountName": {
-                "type": "string",
-                "defaultValue": ""
-            },
-            "StorageAccountKey": {
                 "type": "string",
                 "defaultValue": ""
             }
